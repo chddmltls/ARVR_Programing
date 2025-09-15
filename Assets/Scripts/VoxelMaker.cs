@@ -10,6 +10,8 @@ public class VoxelMaker : MonoBehaviour
 
     public static List<GameObject> voxelPool = new List<GameObject>(); //새로운 배열 생성
 
+    public float createTime = 0.1f; //복셀 생성 시간
+    private float currentTime = 0; //자동 생성 경과시간
     void Start()
     {
         for (int i = 0; i < voxelPoolSize; i++) //반복문으로 풀에 있을 복셀 개수 정의
@@ -23,7 +25,8 @@ public class VoxelMaker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1")) //사용자가 마우스를 클릭한다면,
+        //if (Input.GetButtonDown("Fire1")) //사용자가 마우스를 클릭한다면,
+        if (currentTime > createTime) //생성 시간이 지났다면 계속 생성하도록
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //마우스가 가진 방향으로 레이 쏘기
             RaycastHit hitInfo = new RaycastHit(); //hit 관련 정보 저장
@@ -36,8 +39,12 @@ public class VoxelMaker : MonoBehaviour
                     voxel.SetActive(true); //풀에 있던 객체 활성화
                     voxel.transform.position = hitInfo.point; //복셀의 위치를 히트인포가 갖고있는 위치 값으로
                     voxelPool.RemoveAt(0); //오브젝트 풀에서 복셀 1개 제거
+
+                    currentTime = 0; //반복해서 생성
                 }
             }
         }
+
+        currentTime += Time.deltaTime;
     }
 }
