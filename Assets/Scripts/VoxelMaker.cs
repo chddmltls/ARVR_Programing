@@ -5,10 +5,19 @@ using UnityEngine;
 public class VoxelMaker : MonoBehaviour
 {
     public GameObject voxelFactory;
-    // Start is called before the first frame update
+
+    public int voxelPoolSize = 20; //오브젝트 풀의 크기
+
+    public static List<GameObject> voxelPool = new List<GameObject>(); //새로운 배열 생성
+
     void Start()
     {
-        
+        for (int i = 0; i < voxelPoolSize; i++) //반복문으로 풀에 있을 복셀 개수 정의
+        {
+            GameObject voxel = Instantiate(voxelFactory); //복셀 새로 만들기 / Instantiate -> 새로운 게임 오브젝트 만들어줌 
+            voxel.SetActive(false); //풀로 가는 복셀은 눈에 보일 건 아니므로 비활성화
+            voxelPool.Add(voxel); //복셀 풀에 복셀을 추가
+        }
     }
 
     // Update is called once per frame
@@ -21,8 +30,13 @@ public class VoxelMaker : MonoBehaviour
 
             if (Physics.Raycast(ray, out hitInfo)) //hitInfo에 값이 들어온다면.. (out의 의미: 정보를 채워나가주는 output)
             {
-                GameObject voxel = Instantiate(voxelFactory); //Instantiate -> 새로운 게임 오브젝트 만들어줌
-                voxel.transform.position = hitInfo.point; //복셀의 위치를 히트인포가 갖고있는 위치 값으로
+                if (voxelPool.Count > 0) //풀 안에 복셀이 있다면
+                {
+                    GameObject voxel = voxelPool[0]; //voxelPool에서 가져오기
+                    voxel.SetActive(true); //풀에 있던 객체 활성화
+                    voxel.transform.position = hitInfo.point; //복셀의 위치를 히트인포가 갖고있는 위치 값으로
+                    voxelPool.RemoveAt(0); //오브젝트 풀에서 복셀 1개 제거
+                }
             }
         }
     }
