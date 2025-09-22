@@ -5,7 +5,7 @@ using UnityEngine;
 public class VoxelMaker : MonoBehaviour
 {
     public GameObject voxelFactory;
-
+    public Transform crossHair;
     public int voxelPoolSize = 20; //오브젝트 풀의 크기
 
     public static List<GameObject> voxelPool = new List<GameObject>(); //새로운 배열 생성
@@ -25,10 +25,13 @@ public class VoxelMaker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ARAVRInput.DrawCrosshair(crossHair); //크로스헤어 그리기
         //if (Input.GetButtonDown("Fire1")) //사용자가 마우스를 클릭한다면,
-        if (currentTime > createTime) //생성 시간이 지났다면 계속 생성하도록
+        //if (currentTime > createTime) //생성 시간이 지났다면 계속 생성하도록
+        if (ARAVRInput.GetDown(ARAVRInput.Button.One))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //마우스가 가진 방향으로 레이 쏘기
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //마우스가 가진 방향으로 레이 쏘기
+            Ray ray = new Ray(ARAVRInput.RHandPosition, ARAVRInput.RHandDirection); //VR 컨트롤러가 보는 방향으로 레이 쏘기
             RaycastHit hitInfo = new RaycastHit(); //hit 관련 정보 저장
 
             if (Physics.Raycast(ray, out hitInfo)) //hitInfo에 값이 들어온다면.. (out의 의미: 정보를 채워나가주는 output)
